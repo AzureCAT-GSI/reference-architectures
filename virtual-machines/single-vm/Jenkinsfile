@@ -1,0 +1,62 @@
+stage 'Clone'
+node {
+  // Clean Jenkins workspace
+  cleanWs()
+
+  // Clone git repository from GitHub to Jenkins workspace
+  git 'https://github.com/mspnp/reference-architectures.git'
+}
+
+stage 'Bash'
+node {
+  // Load Jenkins Credentials into environment variables
+  withCredentials([string(credentialsId: 'spUsername', variable: 'spUsername'), string(credentialsId: 'spPassword', variable: 'spPassword'), string(credentialsId: 'spTenant', variable: 'spTenant'), string(credentialsId: 'azSubscription', variable: 'azSubscription')]) {
+    // Sign in with Service Principal
+    sh 'azure login \
+      --service-principal \
+      --username $spUsername \
+      --password $spPassword \
+      --tenant $spTenant'
+
+    // Run deployment script
+    sh 'bash ./virtual-machines/single-vm/deploy-reference-architecture.sh \
+      --location westus \
+      --os-type linux \
+      --subscription $azSubscription'
+
+    // Delete Resoure Group
+    sh 'azure group delete \
+      --name ra-single-vm-rg \
+      --quiet'
+    
+    // Sign out of CLI
+    sh 'azure account clear'
+  }
+}
+
+stage 'ARM'
+node {
+  // Load Jenkins Credentials into environment variables
+  withCredentials([string(credentialsId: 'spUsername', variable: 'spUsername'), string(credentialsId: 'spPassword', variable: 'spPassword'), string(credentialsId: 'spTenant', variable: 'spTenant'), string(credentialsId: 'azSubscription', variable: 'azSubscription')]) {
+    // Sign in with Service Principal
+    sh 'az login \
+      --service-principal \
+      --username $spUsername \
+      --password $spPassword \
+      --tenant $spTenant'
+
+    // Create a Resource Group
+    sh 'az group create --name ra-single-vm-rg --location westus'
+        
+    // Create new ARM Deployment
+    sh 'az group deployment create --resource-group ra-single-vm-rg --template-file ./virtual-machines/single-vm/azuredeploy.json'
+
+    // Delete Resource Group
+    sh 'az group delete \
+      --name ra-single-vm-rg \
+      --yes'
+    
+    // Sign out of CLI
+    sh 'az account clear'
+  }
+}
