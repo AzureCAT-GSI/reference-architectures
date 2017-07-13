@@ -37,7 +37,7 @@ $virtualMachineParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parame
 $networkSecurityGroupParametersFile = [System.IO.Path]::Combine($PSScriptRoot, "parameters", $OSType.ToLower(), "networkSecurityGroups.parameters.json")
 
 # Login to Azure and select your subscription
-Login-AzureRmAccount -SubscriptionId $SubscriptionId | Out-Null
+# Login-AzureRmAccount -SubscriptionId $SubscriptionId | Out-Null
 
 # Create the resource group
 $resourceGroup = New-AzureRmResourceGroup -Name $ResourceGroupName -Location $Location
