@@ -17,6 +17,9 @@ node {
       --username $spUsername \
       --password $spPassword \
       --tenant $spTenant'
+    
+    // Ensure proper subscription
+    sh 'azure account set $azSubscription'
 
     // Run deployment script
     sh 'bash ./virtual-machines/multi-vm/deploy-reference-architecture.sh \
@@ -44,6 +47,9 @@ node {
       --username $spUsername \
       --password $spPassword \
       --tenant $spTenant'
+
+    // Ensure proper subscription
+    sh 'az account set --subscription $azSubscription'
 
     // Create a Resource Group
     sh 'az group create \
