@@ -19,7 +19,7 @@ node {
       --tenant $spTenant'
 
     // Run deployment script
-    sh 'bash ./virtual-machines/single-vm/deploy-reference-architecture.sh \
+    sh 'bash ./virtual-machines/multi-vm/deploy-reference-architecture.sh \
       --location westus \
       --os-type linux \
       --subscription $azSubscription'
@@ -53,7 +53,7 @@ node {
     // Create new ARM Deployment
     sh 'az group deployment create \
       --resource-group ra-multi-vm-rg \
-      --template-file ./virtual-machines/single-vm/azuredeploy.json'
+      --template-file ./virtual-machines/multi-vm/azuredeploy.json'
 
     // Delete Resource Group
     sh 'az group delete \
