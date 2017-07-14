@@ -46,10 +46,14 @@ node {
       --tenant $spTenant'
 
     // Create a Resource Group
-    sh 'az group create --name ra-single-vm-rg --location westus'
+    sh 'az group create \
+      --name ra-single-vm-rg \
+      --location westus'
         
     // Create new ARM Deployment
-    sh 'az group deployment create --resource-group ra-single-vm-rg --template-file ./virtual-machines/single-vm/azuredeploy.json'
+    sh 'az group deployment create \
+      --resource-group ra-single-vm-rg \
+      --template-file ./virtual-machines/single-vm/azuredeploy.json'
 
     // Delete Resource Group
     sh 'az group delete \
